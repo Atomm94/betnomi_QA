@@ -1,11 +1,12 @@
 const fs = require('fs/promises');
 const webdriver = require('selenium-webdriver');
-const assert = require('assert');
 const chrome = require('chromedriver');
 const Helper = require('./Helper.js');
+const {client_password, client_username} = require('./config');
 const {logging} = require("selenium-webdriver");
-//let nextPort = 9222
+const {Logs} = require("selenium-webdriver/lib/webdriver");
 let opts = { 'args': ['--disable-gpu'] };//'--headless',--incognito
+
 
 function BotService() {
 
@@ -15,38 +16,23 @@ function BotService() {
 
     this.login = async function(){ ////button[text()='Sign in']
         let driver = new webdriver.Builder().forBrowser('chrome').setChromeOptions(opts).build();
-        //driver.manage().window().maximize()
-        url = "https://www.sas.am/";
+        url = "https://betnomi.me/";
         await driver.get(url);
-        const element = webdriver.By.className('page-header__left'); //styles_buttons__3SHBq
-        await driver.wait(webdriver.until.elementLocated(element), 10000);
+       try {
+            //const response = await driver.executeScript('browserstack_executor: {"action": "getSessionDetails"}');
+           // console.log(response);
+           let signIn = await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath('/html/body/div/div/div[1]/header/div[3]/button[2]')), 30000)
+           //let text1 = await driver.executeScript("return arguments[0].innerHTML;", text)
 
-        //btn = await driver.wait(driver.findElement(webdriver.By.xpath("//button[text()='Sign in']")), 20000);
-        //btn = await driver.findElement(webdriver.By.xpath("//button[text()='Sign in']"))
+           await driver.executeScript("arguments[0].click();", signIn);
+           await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath("/html/body/div[4]/div/div/div/form/div[1]/div/input")), 10000).sendKeys(client_username);
+           await driver.wait(webdriver.until.elementLocated(webdriver.By.xpath("/html/body/div[4]/div/div/div/form/div[2]/div/input")), 10000).sendKeys(client_password);
+           let logIn = await driver.wait(webdriver.until.elementLocated(webdriver.By.className('styles_submit_button__2xWm1')), 10000)
+           await driver.executeScript("arguments[0].click();", logIn);
 
-        //btn = await driver.findElement(webdriver.By.xpath("/html/body/div/div/div[1]/header/div[2]/a[2]"))
-        btn = await driver.findElement(webdriver.By.className("menu-toggler js-menu-toggler"))
-        //console.log(btn.getText())
-        btn.click()
-        //console.log(btn.getText())
-        // await driver.wait(webdriver.until.elementLocated(webdriver.By.id('email')), timeout);
-        // driver.findElement(webdriver.By.id('email')).sendKeys(user.username);
-        // driver.findElement(webdriver.By.id('password')).sendKeys(user.password);
-        // driver.findElement(webdriver.By.id('logInBtn')).click();
-        // await driver.wait(webdriver.until.elementLocated(webdriver.By.id('btnSendCode')), timeout);
-        // driver.findElement(webdriver.By.id('btnSendCode')).click();
-        // await driver.wait(webdriver.until.elementLocated(webdriver.By.id('twoFactorCode')), timeout);
-        // driver.findElement(webdriver.By.id('twoFactorCode')).sendKeys(user.code);
-        // await driver.findElement(webdriver.By.id('btnSubmit'), 20000).click();
-        //
-        // await driver.wait(webdriver.until.elementLocated(webdriver.By.className('icon-transfer')), 30000).click();
-        // driver.takeScreenshot().then(image => {
-        //     require('fs').writeFileSync('screen.png', image, 'base64');
-        //     helper.log(order.id+'-',image)
-        // }).catch(err => console.log(err));
-        // const screen = await driver.takeScreenshot();
-        // await helper.log(order.id+'-',screen);
-
+       } catch (err) {
+           console.log(err)
+       }
         return driver;
     }
 

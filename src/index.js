@@ -97,9 +97,11 @@ const handler = async function(req, res) {
                 //     //return helper.response(res, "Some user can't login", null, 400);
                 //     //return response;
                 // }
+                console.log('barev')
                 // console.log('our driver')
-                // console.log(clientDriver)
-                await clientDriver.close();
+                //console.log(clientDriver)
+                //await clientDriver.close();
+                console.log('barev2')
                // await clientDriver.quit();
                 //await buyertDriver.close();
                // console.log('both logins')
@@ -128,6 +130,7 @@ const handler = async function(req, res) {
         // });
        // return res;
         //console.log(response)
+
         const response = await contextDone({
             "status": "ok",
             "result": result
@@ -147,4 +150,3 @@ const handler = async function(req, res) {
     }
 
 }
-
